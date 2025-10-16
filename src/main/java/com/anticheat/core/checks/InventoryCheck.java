@@ -10,7 +10,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-// PlayerSwapHandItemsEvent no existe en 1.8, se omite para compatibilidad
+// PlayerSwapHandItemsEvent does not exist in 1.8, omitted for compatibility
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
@@ -27,7 +27,7 @@ public class InventoryCheck implements Listener {
     private final Map<UUID, Long> lastDamage = new HashMap<>();
     private final Map<UUID, Integer> invMoveTicks = new HashMap<>();
 
-    // Compatibilidad con versiones sin mano secundaria: detección por clics de inventario
+    // Compatibility with versions without offhand: detect via inventory clicks
 
     public InventoryCheck(AntiCheatPlugin plugin) {
         this.plugin = plugin;
@@ -37,19 +37,19 @@ public class InventoryCheck implements Listener {
     public void onDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
         Player p = (Player) event.getEntity();
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(p)) return;
         UUID id = p.getUniqueId();
         lastDamage.put(id, System.currentTimeMillis());
     }
 
-    // Método onSwap eliminado por compatibilidad con 1.8 (no hay evento SwapHand)
+    // onSwap method removed for 1.8 compatibility (no SwapHand event)
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player player = (Player) event.getWhoClicked();
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(player)) return;
         boolean autototemEnabled = plugin.getConfig().getBoolean("checks.inventory.autototem.enabled", true);
         ItemStack clicked = event.getCurrentItem();
@@ -70,7 +70,7 @@ public class InventoryCheck implements Listener {
             }
         }
 
-        // Crash por libros con contenido excesivo
+        // Crash detection for books with excessive content
         boolean crashBookEnabled = plugin.getConfig().getBoolean("checks.crash.book.enabled", true);
         if (crashBookEnabled && clicked != null && clicked.getType() != null) {
             String type = clicked.getType().name();
@@ -95,7 +95,7 @@ public class InventoryCheck implements Listener {
                         if (remove) {
                             event.setCurrentItem(null);
                         }
-                        // Log detallado del intento de crash por libro
+                        // Detailed logging of crash attempt via book
                         try {
                             int pagesCount = pages != null ? pages.size() : 0;
                             int maxPageLen = 0;
@@ -133,7 +133,7 @@ public class InventoryCheck implements Listener {
     @EventHandler
     public void onHeld(PlayerItemHeldEvent event) {
         Player player = event.getPlayer();
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(player)) return;
         UUID id = player.getUniqueId();
         long now = System.currentTimeMillis();
@@ -161,16 +161,16 @@ public class InventoryCheck implements Listener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        // Detección de InventoryMove: movimiento con inventario abierto
+        // InventoryMove detection: movement while inventory is open
         if (!plugin.getConfig().getBoolean("checks.inventory.move.enabled", true)) return;
         if (event.getFrom().toVector().equals(event.getTo().toVector())) return;
         Player player = event.getPlayer();
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(player)) return;
         org.bukkit.inventory.InventoryView view = player.getOpenInventory();
         if (view == null) return;
         InventoryType type = view.getType();
-        // Permitir inventario propio y creativo
+        // Allow personal inventory and creative
         if (type == InventoryType.CRAFTING || type == InventoryType.CREATIVE) return;
         double dx = event.getTo().getX() - event.getFrom().getX();
         double dz = event.getTo().getZ() - event.getFrom().getZ();
@@ -185,7 +185,7 @@ public class InventoryCheck implements Listener {
             if (t >= threshold) {
                 int vl = plugin.getViolationManager().addViolation(id, "Inventory", 1);
                 if (cancel) event.setTo(event.getFrom());
-                // Log detallado del movimiento con inventario
+                // Detailed logging of movement with inventory open
                 try {
                     org.bukkit.Location loc = event.getTo();
                     String invTypeName = type != null ? type.name() : "UNKNOWN";

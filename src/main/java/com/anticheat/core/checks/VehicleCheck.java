@@ -18,7 +18,7 @@ import java.util.UUID;
 public class VehicleCheck implements Listener {
 
     private final AntiCheatPlugin plugin;
-    // Ticks consecutivos que un jugador en bote permanece fuera de líquido y sin bloque bajo
+    // Consecutive ticks a boat rider is out of liquid and without a solid block below
     private final Map<UUID, Integer> boatAirTicks = new HashMap<>();
 
     public VehicleCheck(AntiCheatPlugin plugin) {
@@ -29,7 +29,7 @@ public class VehicleCheck implements Listener {
     public void onVehicleMove(VehicleMoveEvent event) {
         Entity vehicle = event.getVehicle();
         if (!(vehicle instanceof Boat)) return;
-        // Buscar pasajero jugador (compatible con 1.8 y versiones modernas)
+        // Find player passenger (compatible with 1.8 and modern versions)
         Player rider = null;
         try {
             java.lang.reflect.Method m = vehicle.getClass().getMethod("getPassengers");
@@ -45,7 +45,7 @@ public class VehicleCheck implements Listener {
             if (p instanceof Player) rider = (Player) p;
         }
         if (rider == null) return;
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(rider)) return;
 
         Location from = event.getFrom();
@@ -55,7 +55,7 @@ public class VehicleCheck implements Listener {
         double dy = to.getY() - from.getY();
         double horizontal = Math.sqrt(dx * dx + dz * dz);
 
-        // Considerar agua en el bloque actual y el bloque inmediatamente inferior
+        // Consider liquid in the current block and the block immediately below
         boolean inLiquid = BlockUtil.isInLiquid(to) || BlockUtil.isInLiquid(to.clone().add(0, -1, 0));
         boolean hasSolidBelow = BlockUtil.hasSolidBelow(to, 2);
 

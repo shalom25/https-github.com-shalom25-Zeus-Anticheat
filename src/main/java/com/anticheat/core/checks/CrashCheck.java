@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * Detecciones de intentos de crash por contenido excesivo:
- * - Carteles con demasiados caracteres por línea o total.
- * La detección de libros está en InventoryCheck para compatibilidad 1.8.
+ * Detections of crash attempts due to excessive content:
+ * - Signs with too many characters per line or in total.
+ * Book detection is handled in InventoryCheck for 1.8 compatibility.
  */
 public class CrashCheck implements Listener {
 
@@ -29,7 +29,7 @@ public class CrashCheck implements Listener {
     public void onSignChange(SignChangeEvent event) {
         if (!plugin.getConfig().getBoolean("checks.crash.sign.enabled", true)) return;
         Player player = event.getPlayer();
-        // Bypass granular: Crash NO debe ser eximido si así lo indica config
+        // Granular bypass: Crash must NOT be exempted if configured
         if (plugin.isExemptFor(player, "crash")) return;
         UUID id = player.getUniqueId();
 
@@ -52,7 +52,7 @@ public class CrashCheck implements Listener {
         if (tooLongLine || total > maxTotal) {
             int vl = plugin.getViolationManager().addViolation(id, "Crash", 1);
             if (cancel) event.setCancelled(true);
-            // Log detallado del contenido del cartel
+            // Detailed log of sign content
             try {
                 org.bukkit.Location loc = player.getLocation();
                 plugin.getViolationManager().addDetectionDetail(

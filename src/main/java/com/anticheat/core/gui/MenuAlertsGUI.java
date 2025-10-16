@@ -43,7 +43,7 @@ public class MenuAlertsGUI implements Listener {
         online.sort((a, b) -> Integer.compare(sum(vm.getAll(b.getUniqueId())), sum(vm.getAll(a.getUniqueId()))));
         for (Player p : online) {
             if (p == null) continue;
-            if (plugin.isExempt(p)) continue; // no mostrar exentos totales
+            if (plugin.isExempt(p)) continue; // do not show globally exempt players
             int total = sum(vm.getAll(p.getUniqueId()));
             if (total > 0) flagged.add(p.getUniqueId());
         }
@@ -58,7 +58,7 @@ public class MenuAlertsGUI implements Listener {
         String title = plugin.getMessages().get("menu.alerts.title");
         Inventory inv = Bukkit.createInventory(null, size, title);
 
-        int itemsPerPage = 25; // reservar 18 y 26 para navegación
+        int itemsPerPage = 25; // reserve 18 and 26 for navigation
         int start = page * itemsPerPage;
         int end = Math.min(start + itemsPerPage, list.size());
         int slot = 0;
@@ -136,7 +136,7 @@ public class MenuAlertsGUI implements Listener {
         if (mat == null) mat = safeMaterial("SKULL");
         ItemStack skull;
         if (mat != null) {
-            // Para versiones legacy, usar data=3 para cabeza de jugador
+            // For legacy versions, use data=3 for player head
             if (mat.name().equals("SKULL_ITEM") || mat.name().equals("SKULL")) {
                 skull = new ItemStack(mat, 1, (short) 3);
             } else {

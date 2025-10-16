@@ -85,11 +85,11 @@ public class MovementCheck implements Listener {
             }
             return;
         } else if (until != 0L) {
-            // Limpiar estado cuando expira
+            // Clear state when freeze expires
             plugin.clearFreecamFreeze(player.getUniqueId());
         }
 
-        // Registrar momento de planeo para eximir aterrizajes con elytra en NoFall
+        // Record gliding moment to exempt Elytra landings in NoFall
         try {
             java.lang.reflect.Method m = player.getClass().getMethod("isGliding");
             Object r = m.invoke(player);
@@ -98,34 +98,34 @@ public class MovementCheck implements Listener {
             }
         } catch (Exception ignored) {}
 
-        // Check de velocidad (Speed)
+        // Speed check (Speed)
         checkSpeed(player, event);
 
-        // Check de vuelo ilegal (Fly)
+        // Fly check (illegal flight)
         checkFly(player, event);
 
-        // BHop (bunny hop) y OnGround Speed
+        // BHop (bunny hop) and OnGround Speed
         checkBHopAndOnGroundSpeed(player, event);
 
-        // Paso antinatural (Step)
+        // Unnatural step (Step)
         checkStep(player, event);
 
-        // Caminar sobre agua (Jesus/WaterWalk)
+        // Walk on water (Jesus/WaterWalk)
         checkJesus(player, event);
 
-        // Jetpack (ascenso vertical sostenido sin permiso)
+        // Jetpack (sustained vertical ascent without permission)
         checkJetpack(player, event);
 
-        // Spider/Climb (escalar paredes)
+        // Spider/Climb (wall climbing)
         checkSpider(player, event);
 
-        // Blink (teleport por paquetes)
+        // Blink (packet-based teleport)
         checkBlink(player, event);
 
-        // NoFall heurístico (caída larga sin daño)
+        // Heuristic NoFall (long fall without damage)
         trackNoFallHeuristic(player, event);
 
-        // Timer (eventos de movimiento excesivos)
+        // Timer (excessive movement events)
         checkTimer(player);
 
         checkNoSlow(player, event);
@@ -179,13 +179,13 @@ public class MovementCheck implements Listener {
         Material below = player.getLocation().clone().add(0, -0.5, 0).getBlock().getType();
         boolean slippery = ignoreSurfaces.contains(below);
 
-        // Evitar falsos positivos por vehículos o daño
+        // Avoid false positives from vehicles or damage
         if (player.isInsideVehicle()) return;
 
         double limit = allowed * marginMultiplier + jitterBuffer;
         if (!slippery && horizontal > limit) {
             int vl = plugin.getViolationManager().addViolation(player.getUniqueId(), "Speed", 1);
-            if (vl % 2 == 1) { // mensajes no spam
+            if (vl % 2 == 1) { // no-spam messages
                 MessageService ms = plugin.getMessages();
                 String prefix = org.bukkit.ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("messages.prefix", "[AntiCheat] "));
                 java.util.Map<String,String> ph = new java.util.HashMap<String, String>();
@@ -194,20 +194,20 @@ public class MovementCheck implements Listener {
                 String key = isSprinting ? "player.speed_sprint" : "player.speed_walk";
                 player.sendMessage(ms.format(key, ph));
             }
-            // Bloqueo inmediato por speed: setback a la posición anterior
+            // Immediate speed block: setback to previous location
             event.setTo(event.getFrom());
         }
     }
 
     private void checkFly(Player player, PlayerMoveEvent event) {
         if (!enabled("checks.movement.fly.enabled")) return;
-        // Ignorar si el jugador puede volar (modo creativo) o está en vehículo
+        // Ignore if the player can fly (creative mode) or is inside a vehicle
         if (player.getAllowFlight() || player.isInsideVehicle()) {
             airTicks.put(player.getUniqueId(), 0);
             return;
         }
 
-        // Ignorar planeo con Elytra si está disponible en la versión
+        // Ignore Elytra gliding if available in this version
         boolean isGliding = false;
         try {
             java.lang.reflect.Method m = player.getClass().getMethod("isGliding");
@@ -227,7 +227,7 @@ public class MovementCheck implements Listener {
         boolean hasSolidBelow = BlockUtil.hasSolidBelow(player.getLocation(), 2);
 
         int ticks = airTicks.getOrDefault(player.getUniqueId(), 0);
-        // Si está cayendo (dy negativo significativo), no contar como vuelo y resetear tolerancia
+        // If falling (significant negative dy), don't count as flight and reset tolerance
         if (dy < -hoverEpsilon) {
             airTicks.put(player.getUniqueId(), 0);
             return;
@@ -395,7 +395,7 @@ public class MovementCheck implements Listener {
         }
     }
 
-    // Detección de planeo (elytra) con reflexión para compatibilidad entre versiones
+    // Gliding (elytra) detection via reflection for cross-version compatibility
     private boolean isGliding(Player player) {
         try {
             java.lang.reflect.Method m = player.getClass().getMethod("isGliding");

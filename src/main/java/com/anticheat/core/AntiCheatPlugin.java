@@ -37,7 +37,7 @@ public class AntiCheatPlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         saveDefaultConfig();
-        // Guardar archivos de mensajes por defecto (si no existen)
+        // Save default message files (if not present)
         try {
             saveResource("lang/messages_es.yml", false);
         } catch (IllegalArgumentException ignored) {}
@@ -60,32 +60,32 @@ public class AntiCheatPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new InventoryCheck(this), this);
         getServer().getPluginManager().registerEvents(new BaritoneCheck(this), this);
         getServer().getPluginManager().registerEvents(new CrashCheck(this), this);
-        // Menú GUI de alertas y submenú de acciones
+        // Alerts GUI and actions submenu
         MenuPlayerActionsGUI actionsGUI = new MenuPlayerActionsGUI(this);
         MenuAlertsGUI menuGUI = new MenuAlertsGUI(this, actionsGUI);
         actionsGUI.setAlertsGUI(menuGUI);
         getServer().getPluginManager().registerEvents(menuGUI, this);
         getServer().getPluginManager().registerEvents(actionsGUI, this);
 
-        // Ejecutores de comando
+        // Command executors
         try { getCommand("zeus").setExecutor(new ZeusCommand(this)); } catch (Throwable ignored) {}
         try { getCommand("anticheat").setExecutor(new AntiCheatCommand(this)); } catch (Throwable ignored) {}
         try { getCommand("menu").setExecutor(new MenuCommand(this, menuGUI)); } catch (Throwable ignored) {}
         getServer().getPluginManager().registerEvents(new TeleportCheck(this), this);
-        // Listener de chat para muteos
+        // Chat listener for mutes
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
 
-        // Hook de moderación para Essentials
+        // Essentials moderation hook
         if (getConfig().getBoolean("hooks.essentials.enabled", true) && getServer().getPluginManager().getPlugin("Essentials") != null) {
             getServer().getPluginManager().registerEvents(new ModerationHookListener(this), this);
         }
 
-        // Comando admin
+        // Admin command
         if (getCommand("anticheat") != null) {
             getCommand("anticheat").setExecutor(new AntiCheatCommand(this));
         }
 
-        // Comando Zeus
+        // Zeus command
         if (getCommand("zeus") != null) {
             getCommand("zeus").setExecutor(new ZeusCommand(this));
         }
@@ -95,7 +95,7 @@ public class AntiCheatPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        getLogger().info("Zeus Anti-Cheat deshabilitado.");
+        getLogger().info("Zeus Anti-Cheat disabled.");
     }
 
     public ViolationManager getViolationManager() {
@@ -106,13 +106,13 @@ public class AntiCheatPlugin extends JavaPlugin {
         return messageService;
     }
 
-    // Detección de jugadores Bedrock vía Floodgate (si está disponible)
+    // Detect Bedrock players via Floodgate (if available)
     public boolean isBedrockPlayer(Player player) {
         if (player == null) return false;
         try {
             org.bukkit.plugin.Plugin fg = getServer().getPluginManager().getPlugin("Floodgate");
             if (fg == null) fg = getServer().getPluginManager().getPlugin("floodgate");
-            if (fg == null) return false; // Floodgate no instalado
+            if (fg == null) return false; // Floodgate not installed
             Class<?> apiClass = Class.forName("org.geysermc.floodgate.api.FloodgateApi");
             java.lang.reflect.Method getInstance = apiClass.getMethod("getInstance");
             Object api = getInstance.invoke(null);
@@ -161,15 +161,15 @@ public class AntiCheatPlugin extends JavaPlugin {
         freecamFreezeUntil.remove(uuid);
     }
 
-    // Exención central: jugadores que no deben ser afectados por el anti‑cheat
+    // Global exemption: players not affected by the anti-cheat
     public boolean isExempt(Player player) {
         if (player == null) return false;
         try {
-            // Ignorar completamente jugadores Bedrock si está habilitado
+            // Fully ignore Bedrock players if enabled
             if (getConfig().getBoolean("exempt.bedrock", true) && isBedrockPlayer(player)) return true;
-            // Eximir OP si está habilitado
+            // Exempt OPs if enabled
             if (getConfig().getBoolean("exempt.ops", true) && player.isOp()) return true;
-            // Eximir por permisos configurados
+            // Exempt via configured permissions
             java.util.List<String> perms = getConfig().getStringList("exempt.permissions");
             if (perms != null) {
                 for (String perm : perms) {
@@ -182,10 +182,10 @@ public class AntiCheatPlugin extends JavaPlugin {
         return false;
     }
 
-    // Bypass granular: permite controlar si un check específico puede ser eximido
+    // Granular bypass: control whether a specific check can be exempted
     public boolean isExemptFor(Player player, String checkKey) {
         if (player == null) return false;
-        // Bedrock: siempre exento si está habilitado, independientemente del check
+        // Bedrock: always exempt if enabled, regardless of check
         try {
             if (getConfig().getBoolean("exempt.bedrock", true) && isBedrockPlayer(player)) return true;
         } catch (Throwable ignored) {}

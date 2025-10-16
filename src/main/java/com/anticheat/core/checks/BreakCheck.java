@@ -88,7 +88,7 @@ public class BreakCheck implements Listener {
         if (fastbreakEnabled && deque.size() > maxPerSec) {
             int vl = plugin.getViolationManager().addViolation(id, "FastBreak", 1);
             event.setCancelled(true);
-            // Log detallado para diagnóstico
+            // Detailed logging for diagnosis
             try {
                 plugin.getViolationManager().addDetectionDetail(
                         player,

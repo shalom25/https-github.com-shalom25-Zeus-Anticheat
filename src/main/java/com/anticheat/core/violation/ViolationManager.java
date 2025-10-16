@@ -30,7 +30,7 @@ public class ViolationManager {
 
     public ViolationManager(AntiCheatPlugin plugin) {
         this.plugin = plugin;
-        // Cargar logs persistentes si está habilitado
+        // Load persistent logs if enabled
         boolean persist = plugin.getConfig().getBoolean("logs.persist_to_file", true);
         int maxInMem = plugin.getConfig().getInt("logs.max_in_memory", 500);
         if (persist) {
@@ -247,7 +247,7 @@ public class ViolationManager {
         int maxInMem = plugin.getConfig().getInt("logs.max_in_memory", 500);
         while (logs.size() > maxInMem) logs.pollFirst();
 
-        // Persistir en archivo si está habilitado
+        // Persist to file if enabled
         if (plugin.getConfig().getBoolean("logs.persist_to_file", true)) {
             try {
                 File dataDir = plugin.getDataFolder();
@@ -264,7 +264,7 @@ public class ViolationManager {
         }
     }
 
-    // Registro detallado adicional con metadatos (coordenadas, acción cancelada, etc.)
+    // Additional detailed logging with metadata (coordinates, cancelled action, etc.)
     public void addDetectionDetail(Player player, String check, int vl, String details) {
         String time = new SimpleDateFormat("HH:mm:ss").format(new Date());
         String base = ChatColor.GRAY + "[" + time + "] " + ChatColor.YELLOW + "DETAIL"
@@ -304,7 +304,7 @@ public class ViolationManager {
         return out.subList(start, out.size());
     }
 
-    // Devuelve todos los logs filtrados (para paginación)
+    // Returns all filtered logs (for pagination)
     public List<String> getLogsFiltered(String playerFilter) {
         List<String> out = new ArrayList<>();
         for (String l : logs) {
@@ -324,7 +324,7 @@ public class ViolationManager {
         if (until == null) return false;
         if (until == Long.MAX_VALUE) return true;
         if (System.currentTimeMillis() <= until) return true;
-        // expiró
+        // expired
         mutedUntil.remove(uuid);
         return false;
     }

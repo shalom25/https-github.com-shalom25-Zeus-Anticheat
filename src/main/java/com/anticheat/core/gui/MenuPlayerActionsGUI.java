@@ -35,7 +35,7 @@ public class MenuPlayerActionsGUI implements Listener {
         String title = ms.format("menu.actions.title", new java.util.HashMap<String, String>() {{ put("player", target.getName()); }});
         Inventory inv = Bukkit.createInventory(null, 27, title);
 
-        // Items de acción
+        // Action items
         ItemStack tp = new ItemStack(safeMaterial("ENDER_PEARL"));
         ItemMeta tpMeta = tp.getItemMeta();
         if (tpMeta != null) {
@@ -61,7 +61,7 @@ public class MenuPlayerActionsGUI implements Listener {
         inv.setItem(13, reset);
         inv.setItem(16, logs);
 
-        // Botón Atrás
+        // Back button
         ItemStack back = new ItemStack(safeMaterial("ARROW"));
         ItemMeta backMeta = back.getItemMeta();
         if (backMeta != null) {
@@ -146,7 +146,7 @@ public class MenuPlayerActionsGUI implements Listener {
             }
         }
 
-        // Atrás
+        // Back
         if (name.equals(ms.get("menu.actions.back_name"))) {
             if (alertsGUI != null) {
                 alertsGUI.openFor(viewer);

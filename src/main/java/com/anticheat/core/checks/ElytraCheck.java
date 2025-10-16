@@ -65,10 +65,10 @@ public class ElytraCheck implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (!plugin.getConfig().getBoolean("checks.elytra.enabled", true)) return;
         Player player = event.getPlayer();
-        // Bypass: OPs o permisos configurados
+        // Bypass: OPs or configured permissions
         if (plugin.isExempt(player)) return;
         if (!isGliding(player)) return;
-        // Detectar cohete desde el ítem del evento o manos del jugador (main/offhand)
+        // Detect rocket from the event item or player's hands (main/offhand)
         boolean hasFirework = false;
         if (event.getItem() != null) {
             String itemName = event.getItem().getType().name();

@@ -65,7 +65,7 @@ public class ZeusCommand implements CommandExecutor {
                 int count = 10;
                 int page = 1;
                 if (args.length >= 2) {
-                    // Si el segundo argumento es número, es cantidad; si no, es jugador
+                    // If the second argument is a number, it's a count; otherwise it's a player name
                     try {
                         count = Math.max(1, Integer.parseInt(args[1]));
                     } catch (NumberFormatException e) {
@@ -73,7 +73,7 @@ public class ZeusCommand implements CommandExecutor {
                     }
                 }
                 if (args.length >= 3) {
-                    // Si el segundo argumento es jugador, el tercero puede ser cantidad o página
+                    // If the second argument is a player, the third can be count or page
                     try {
                         int val = Integer.parseInt(args[2]);
                         if (targetName == null) {
@@ -226,7 +226,7 @@ public class ZeusCommand implements CommandExecutor {
                     ph.put("duration", durationStr);
                     sender.sendMessage(ms.format("zeus.mute_success", ph));
                 }
-                // Broadcast opcional ya lo maneja ViolationManager cuando es automático; aquí solo confirmamos al staff
+                // Optional broadcast is handled by ViolationManager when automatic; here we only confirm to staff
                 return true;
 
             case "unmute":

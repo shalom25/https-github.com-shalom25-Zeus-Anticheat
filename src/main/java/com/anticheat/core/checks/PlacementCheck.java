@@ -106,11 +106,11 @@ public class PlacementCheck implements Listener {
         Location targetCenter = bLoc.clone().add(0.5, 0.5, 0.5);
         double dist = player.getEyeLocation().distance(targetCenter);
         if (freecamEnabled) {
-            // Alcance excesivo
+            // Excessive reach
             if (dist > reachMax) {
                 int vl = plugin.getViolationManager().addViolation(id, "Freecam", 1);
                 event.setCancelled(true);
-                // Activar congelamiento tras detectar Freecam
+                // Enable freezing after detecting Freecam
                 if (plugin.getConfig().getBoolean("checks.place.freecam.freeze_on_detect", true)) {
                     int freezeMs = plugin.getConfig().getInt("checks.place.freecam.freeze_duration_ms", 2500);
                     plugin.freezePlayerForFreecam(id, now + freezeMs);
@@ -125,14 +125,14 @@ public class PlacementCheck implements Listener {
                 }
                 return;
             }
-            // Verificación de línea de visión para evitar colocación a través de paredes (Freecam)
+            // Line-of-sight check to prevent placement through walls (Freecam)
             boolean losEnabled = plugin.getConfig().getBoolean("checks.place.freecam.los_enabled", true);
             if (losEnabled) {
                 org.bukkit.block.Block support = event.getBlockAgainst();
                 if (isOccludedLOS(player, targetCenter, support)) {
                     int vl = plugin.getViolationManager().addViolation(id, "Freecam", 1);
                     event.setCancelled(true);
-                    // Activar congelamiento tras detectar Freecam
+                    // Enable freezing after detecting Freecam
                     if (plugin.getConfig().getBoolean("checks.place.freecam.freeze_on_detect", true)) {
                         int freezeMs = plugin.getConfig().getInt("checks.place.freecam.freeze_duration_ms", 2500);
                         plugin.freezePlayerForFreecam(id, now + freezeMs);
@@ -150,7 +150,7 @@ public class PlacementCheck implements Listener {
             }
         }
 
-        // resto de checks
+        // Remaining checks
 
         boolean autocrystalEnabled = plugin.getConfig().getBoolean("checks.place.autocrystal.enabled", true);
         if (autocrystalEnabled && event.getBlockPlaced().getType() != null && "END_CRYSTAL".equalsIgnoreCase(event.getBlockPlaced().getType().name())) {

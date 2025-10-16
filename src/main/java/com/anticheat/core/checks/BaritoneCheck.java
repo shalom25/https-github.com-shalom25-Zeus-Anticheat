@@ -84,7 +84,7 @@ public class BaritoneCheck implements Listener {
         int threshold = plugin.getConfig().getInt("checks.movement.baritone.stable_ticks_threshold", 35);
         boolean cancel = plugin.getConfig().getBoolean("checks.movement.baritone.cancel_on_detect", true);
 
-        // Exención: planeo con Elytra (incluye impulso con cohetes)
+        // Exemption: Elytra gliding (includes rocket boost)
         boolean glidingExempt = plugin.getConfig().getBoolean("checks.movement.baritone.gliding_exempt", true);
         boolean isGliding = false;
         try {
@@ -112,7 +112,7 @@ public class BaritoneCheck implements Listener {
         double dy = event.getTo().getY() - event.getFrom().getY();
         boolean toweringExempt = lastPlace != null && (now - lastPlace) <= placeExemptMs && dy > placeMinDy && horizontal <= placeHzEps;
         if (toweringExempt) {
-            // Resetear estabilidad mientras se construye verticalmente para evitar falsos positivos
+            // Reset stability while vertically building to avoid false positives
             UUID id = player.getUniqueId();
             stableTicks.put(id, 0);
             lastHz.put(id, horizontal);
@@ -146,7 +146,7 @@ public class BaritoneCheck implements Listener {
             if (cancel) {
                 event.setTo(event.getFrom());
             }
-            // Log detallado con metadatos
+            // Detailed logging with metadata
             try {
                 plugin.getViolationManager().addDetectionDetail(
                         player,
@@ -168,7 +168,7 @@ public class BaritoneCheck implements Listener {
             ph.put("prefix", prefix);
             ph.put("vl", String.valueOf(vl));
             player.sendMessage(ms.format("player.baritone", ph));
-            // Reset para evitar spam y permitir reevaluación
+            // Reset to avoid spam and allow re-evaluation
             stableTicks.put(id, 0);
         }
     }

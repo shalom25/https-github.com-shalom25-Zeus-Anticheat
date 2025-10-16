@@ -153,7 +153,7 @@ public class ModerationHookListener implements Listener {
 
     @EventHandler
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
-        // Solo si Essentials está presente y hook habilitado
+        // Only if Essentials is present and hook is enabled
         if (Bukkit.getPluginManager().getPlugin("Essentials") == null) return;
         if (!plugin.getConfig().getBoolean("hooks.essentials.enabled", true)) return;
         String name = event.getPlayer().getName();

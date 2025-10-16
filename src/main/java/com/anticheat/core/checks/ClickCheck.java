@@ -80,7 +80,7 @@ public class ClickCheck implements Listener {
         if (autoclickerEnabled && deque.size() > maxCps) {
             int vl = plugin.getViolationManager().addViolation(id, "AutoClicker", 1);
             event.setCancelled(true);
-            // Log detallado para diagnóstico
+            // Detailed logging for diagnosis
             try {
                 Block clicked = event.getClickedBlock();
                 ItemStack item = player.getItemInHand();
