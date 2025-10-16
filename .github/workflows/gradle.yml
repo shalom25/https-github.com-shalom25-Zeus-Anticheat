@@ -8,9 +8,9 @@ on:
   workflow_dispatch:
   release:
     types: [ created ]
-  # Publicar cuando se crea un tag v*
-  # Si prefieres cualquier tag, cambia a patterns: ['*']
-  # Alternativa: usar on: push: tags: ['v*'] y una job separada
+  # Publish when a v* tag is created
+  # If you prefer any tag, change to patterns: ['*']
+  # Alternative: use on: push: tags: ['v*'] with a separate job
 
 jobs:
   build:
@@ -39,7 +39,7 @@ jobs:
           path: build/libs/*.jar
 
   release:
-    # Ejecuta en tags (v*) o en eventos de release creados
+    # Runs on tags (v*) or on created release events
     if: |
       startsWith(github.ref, 'refs/tags/v') || github.event_name == 'release'
     needs: [ build ]
