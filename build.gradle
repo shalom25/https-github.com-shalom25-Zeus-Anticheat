@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.zeusanticheat'
+version = '0.1.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    maven {
+        name = 'spigot-repo'
+        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'spigot-public'
+        url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        name = 'sonatype'
+        url = 'https://oss.sonatype.org/content/groups/public/'
+    }
+    maven {
+        name = 'md-5'
+        url = 'https://repo.md-5.net/content/repositories/snapshots/'
+    }
+    maven {
+        name = 'elmakers'
+        url = 'https://maven.elmakers.com/repository/'
+    }
+}
+
+dependencies {
+    // Spigot API 1.8.8 para compatibilidad con Java 8
+    compileOnly 'org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT'
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

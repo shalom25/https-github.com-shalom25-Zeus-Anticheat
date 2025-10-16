@@ -1,0 +1,56 @@
+name: ZeusAntiCheat
+main: com.anticheat.core.AntiCheatPlugin
+version: 0.1.0
+api-version: '1.20'
+libraries: []
+softdepend: [Essentials, Floodgate]
+commands:
+  anticheat:
+    description: Zeus Anti-Cheat administration command
+    usage: /anticheat <reload|status <player>|reset <player> [all|check]>
+    permission: anticheat.admin
+  zeus:
+    description: Zeus Anti-Cheat main commands
+    usage: /zeus <reload|help|logs [player] [count] [page]|alerts|mute <player> [minutes]|unmute <player>>
+    permission: zeus.help
+  menu:
+    description: Zeus Anti-Cheat menu
+    usage: /menu alerts
+    permission: zeus.menu.alerts
+permissions:
+  anticheat.admin:
+    description: Allows managing Zeus Anti-Cheat
+    default: op
+  zeus.reload:
+    description: Reload Zeus Anti-Cheat configuration
+    default: op
+  zeus.help:
+    description: View help for Zeus Anti-Cheat commands
+    default: op
+  zeus.logs:
+    description: View Zeus Anti-Cheat detection/punishment logs
+    default: op
+  zeus.alerts:
+    description: Receive and control Zeus Anti-Cheat alerts
+    default: op
+  zeus.mute:
+    description: Mute players via Zeus commands
+    default: op
+  zeus.unmute:
+    description: Unmute players via Zeus commands
+    default: op
+  zeus.menu.alerts:
+    description: Open alerts menu (heads and information)
+    default: op
+  zeus.menu.teleport:
+    description: Use teleport action in player actions menu
+    default: op
+  zeus.menu.resetvl:
+    description: Use reset VL action in player actions menu
+    default: op
+  zeus.menu.logs:
+    description: Use view logs action in player actions menu
+    default: op
+  zeus.*:
+    description: Access to all Zeus Anti-Cheat permissions
+    default: op

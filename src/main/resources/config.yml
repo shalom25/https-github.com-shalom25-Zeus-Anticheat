@@ -1,0 +1,406 @@
+# Configuración por defecto para Zeus Anti-Cheat
+
+messages:
+  prefix: "&b[Zeus]&7 "
+  notify_ops_on_detect: true
+  # Broadcast público cuando se sancione a un jugador
+  broadcast_on_kick: true
+  broadcast_on_ban: true
+  broadcast_on_mute: true
+  # Incluir VL en los anuncios públicos del anti-cheat
+  include_vl_in_broadcasts: false
+
+hooks:
+  essentials:
+    enabled: true
+    broadcast: true
+
+# Idioma de los mensajes ("es" o "en")
+language: en
+
+logs:
+  persist_to_file: true
+  file_name: "logs.txt"
+  max_in_memory: 500
+
+# Exenciones: jugadores que el anti‑cheat no debe afectar
+exempt:
+  # Eximir a operadores (OP) de todos los checks
+  ops: true
+  # Lista de permisos que otorgan bypass total
+  permissions:
+    - "anticheat.bypass"
+    - "zeus.bypass"
+  # Ignorar completamente jugadores Bedrock (Floodgate)
+  bedrock: true
+  # Bypass granular por check (true permite bypass; false lo desactiva)
+  checks:
+    crash: false
+
+checks:
+  movement:
+    speed:
+      enabled: true
+      max_base_walk: 0.25
+      max_base_sprint: 0.35
+      per_speed_level_bonus: 0.10
+      # Tolerancias adicionales para reducir falsos positivos en Speed
+      margin_multiplier: 1.25
+      jitter_buffer: 0.04
+      ignore_surfaces:
+        - ICE
+        - PACKED_ICE
+        - BLUE_ICE
+        - FROSTED_ICE
+        - SLIME_BLOCK
+        - HONEY_BLOCK
+    fly:
+      enabled: true
+      max_air_ticks: 12
+      hover_epsilon: 0.015
+    bhop:
+      enabled: true
+      threshold_jumps: 3
+    blink:
+      enabled: true
+      max_distance: 6.0
+    step:
+      enabled: true
+      max_step_y: 0.7
+    jesus:
+      enabled: true
+      max_horizontal_per_tick: 0.35
+    jetpack:
+      enabled: true
+      max_vertical_per_tick: 0.7
+    nofall:
+      enabled: true
+      min_fall_distance: 3.5
+      feather_falling_bonus_per_level: 1.0
+      resistance_multiplier: 1.5
+      absorption_exempt: false
+      damage_exempt_window_ms: 1500
+      landing_grace_ms: 500
+      elytra_landing_exempt_ms: 1200
+      # Exención al salir del agua: no marcar NoFall si tocó líquido recientemente
+      water_landing_exempt_ms: 1500
+    timer:
+      enabled: true
+      max_move_events_per_sec: 35
+    spider:
+      enabled: true
+      max_vertical_per_tick: 0.35
+      threshold_ticks: 4
+      min_vertical_per_tick: 0.08
+      margin_vertical: 0.03
+    noslow:
+      enabled: true
+      max_blocking_horizontal: 0.20
+      threshold: 4
+    ongroundspeed:
+      enabled: true
+    elytra_post_landing_jump_exempt_ms: 1200
+    baritone:
+      enabled: true
+      horizontal_epsilon: 0.02
+      yaw_epsilon_deg: 1.0
+      pitch_epsilon_deg: 1.0
+      stable_ticks_threshold: 35
+      cancel_on_detect: true
+      gliding_exempt: true
+      # Exención de construcción vertical (pillar) cuando se ha colocado bloque recientemente
+      place_exempt_ms: 800
+      place_vertical_min: 0.12
+      place_horizontal_epsilon: 0.35
+  elytra:
+    enabled: true
+    max_vertical_up_per_tick: 1.35
+    max_horizontal_per_tick: 2.6
+    boost_exempt_window_ms: 2500
+    boost_detect_radius: 4.0
+  vehicle:
+    boat:
+      speed:
+        enabled: true
+        max_horizontal_per_tick: 0.9
+      fly:
+        enabled: true
+        max_vertical_per_tick: 0.4
+        # Ticks consecutivos fuera de líquido y sin bloque bajo para alertar BoatFly
+        air_ticks_threshold: 5
+  combat:
+    reach:
+      enabled: true
+      max_distance: 3.8
+    killaura:
+      enabled: true
+      max_cps: 15
+  place:
+    fastplace:
+      enabled: true
+      max_per_sec: 10
+    scaffold:
+      enabled: true
+      max_player_horizontal: 0.90
+      threshold: 12
+      sneaking_exempt: true
+      towering_exempt: true
+      towering_horizontal_epsilon: 0.65
+      jumping_exempt: true
+      jump_vertical_min: 0.23
+      jump_horizontal_epsilon: 0.55
+    freecam:
+      enabled: true
+      max_reach: 5.0
+      los_enabled: true
+      los_ignore_passable: true
+      los_min_distance: 3.8
+      los_target_buffer: 0.8
+      los_step: 0.25
+      freeze_on_detect: true
+      freeze_duration_ms: 2500
+      freeze_notify: true
+      freeze_message: "&cMovement frozen due to Freecam."
+    autocrystal:
+      enabled: true
+      max_per_sec: 6
+    autotrap:
+      enabled: true
+      radius: 1
+      threshold: 5
+  break:
+    fastbreak:
+      enabled: true
+      # Máximo de bloques por segundo antes de alertar FastBreak (base)
+      max_per_sec: 12
+      # Considera Eficiencia en herramienta y Haste para elevar el umbral
+      consider_efficiency: true
+      # Bonificación al umbral por cada nivel de Eficiencia
+      efficiency_bonus_per_level: 1
+      # Bonificación al umbral por cada nivel de Haste
+      haste_bonus_per_level: 2
+      # Multiplicador extra para palas con Eficiencia (instamine en tierra/arena/grava)
+      shovel_efficiency_multiplier: 2.0
+      # Bloques blandos que se ignoran en FastBreak para evitar falsos positivos
+      soft_blocks_ignore:
+        - LONG_GRASS
+        - LEAVES
+        - LEAVES_2
+        - SNOW
+        - CARPET
+        - TORCH
+        - REDSTONE_TORCH_OFF
+        - REDSTONE_TORCH_ON
+        - REDSTONE_WIRE
+        - SUGAR_CANE_BLOCK
+        - CROPS
+        - DIRT
+        - GRASS
+        - SOIL
+        - SAND
+        - GRAVEL
+
+      # Lista de bloques blandos donde permitimos intervalos aún más bajos
+      soft_blocks_allow:
+        - DIRT
+        - GRASS
+        - SAND
+        - GRAVEL
+        - CLAY
+        - SNOW_BLOCK
+        - SOUL_SAND
+        - FARMLAND
+      # Bonificación de tolerancia (bloques/seg) para bloques blandos permitidos
+      soft_blocks_allow_bonus_per_sec: 6
+      # Reducción adicional del intervalo mínimo para bloques blandos
+      soft_blocks_bonus_reduction_ms: 20
+  click:
+    autoclicker:
+      enabled: true
+      # Ignora los clics izquierdos sobre bloques (romper/minar) para reducir falsos positivos
+      ignore_block_clicks: true
+      # Ignora clics muy cercanos a una rotura de bloque (cuando estás minando)
+      ignore_recent_block_break_ms: 220
+      # Considera Eficiencia y Haste al ampliar la ventana de ignorar clics tras rotura
+      consider_efficiency: true
+      ignore_recent_bonus_eff_ms: 30
+      ignore_recent_bonus_haste_ms: 40
+      # Bonificación por usar herramienta de minería (pico, pala, hacha)
+      ignore_recent_tool_bonus_ms: 50
+  inventory:
+    autototem:
+      enabled: true
+      switch_window_ms: 300
+      no_action_threshold_ms: 120
+      cancel_on_detect: true
+    autotool:
+      enabled: true
+    move:
+      enabled: true
+      max_horizontal_when_open: 0.12
+      threshold_ticks: 6
+      cancel_on_detect: true
+  teleport:
+    chorus:
+      enabled: true
+  crash:
+    book:
+      enabled: true
+      max_pages: 50
+      max_chars_per_page: 3500
+      remove_on_detect: true
+      cancel_on_detect: true
+    sign:
+      enabled: true
+      max_chars_per_line: 60
+      max_total_chars: 120
+      cancel_on_detect: true
+
+  punishments:
+  Speed:
+    warn: 5
+    kick: 12
+  Fly:
+    warn: 4
+    kick: 10
+  BHop:
+    warn: 4
+    kick: 10
+  Blink:
+    warn: 3
+    kick: 8
+  Step:
+    warn: 3
+    kick: 8
+  WaterWalk:
+    warn: 3
+    kick: 8
+  Jetpack:
+    warn: 3
+    kick: 8
+  NoFall:
+    warn: 3
+    kick: 8
+  Timer:
+    warn: 5
+    kick: 12
+  ElytraFly:
+    warn: 3
+    kick: 8
+  BoatSpeed:
+    warn: 3
+    kick: 8
+  BoatFly:
+    warn: 3
+    kick: 8
+  Reach:
+    warn: 3
+    kick: 8
+  KillAura:
+    warn: 3
+    kick: 8
+  OnGroundSpeed:
+    warn: 4
+    kick: 10
+  Climb:
+    warn: 3
+    kick: 8
+  NoSlow:
+    warn: 3
+    kick: 8
+  FastPlace:
+    warn: 3
+    kick: 8
+  AutoCrystal:
+    warn: 3
+    kick: 8
+  Freecam:
+    warn: 3
+    kick: 8
+  AutoTrap:
+    warn: 3
+    kick: 8
+  FastBreak:
+    warn: 3
+    kick: 8
+  AutoClicker:
+    warn: 3
+    kick: 8
+  AutoTotem:
+    warn: 3
+    kick: 8
+  AutoTool:
+    warn: 3
+    kick: 8
+  Inventory:
+    warn: 3
+    kick: 8
+  Crash:
+    warn: 3
+    kick: 8
+  Baritone:
+    warn: 3
+    kick: 8
+  ChorusControl:
+    warn: 3
+    kick: 8
+  place:
+    fastplace:
+      max_per_sec: 10
+    scaffold:
+      max_player_horizontal: 0.35
+      threshold: 4
+    freecam:
+      max_reach: 5.5
+    autocrystal:
+      max_per_sec: 6
+    autotrap:
+      radius: 1
+      threshold: 5
+  break:
+    fastbreak:
+      max_per_sec: 12
+  click:
+    autoclicker:
+      max_cps: 20
+  inventory:
+    autototem:
+      damage_window_ms: 3000
+    autotool:
+      max_switch_per_sec: 10
+  teleport:
+    chorus:
+      max_teleports_per_10s: 3
+
+# Lista de hacks/checks que el plugin bloquea
+blocked_hacks:
+  - Speed
+  - OnGroundSpeed
+  - Fly
+  - BHop
+  - Blink
+  - Step
+  - WaterWalk
+  - Jetpack
+  - NoFall
+  - Timer
+  - Climb
+  - NoSlow
+  - ElytraFly
+  - BoatSpeed
+  - BoatFly
+  - Reach
+  - KillAura
+  - FastPlace
+  - Scaffold
+  - Freecam
+  - AutoCrystal
+  - AutoTrap
+  - FastBreak
+  - AutoClicker
+  - AutoTotem
+  - AutoTool
+  - Inventory
+  - Crash
+  - Baritone
+  - ChorusControl

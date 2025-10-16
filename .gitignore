@@ -1,0 +1,23 @@
+# Java/Gradle
+.gradle/
+build/
+bin/
+out/
+
+# Logs
+*.log
+logs.txt
+
+# IDE/editor
+.vscode/
+.idea/
+*.iml
+
+# OS files
+Thumbs.db
+.DS_Store
+
+# Misc
+*.class
+*.jar
+!build/libs/ZeusAntiCheat-*.jar
