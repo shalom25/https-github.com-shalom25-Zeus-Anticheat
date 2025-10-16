@@ -133,7 +133,7 @@ public class MovementCheck implements Listener {
 
     private void checkSpeed(Player player, PlayerMoveEvent event) {
         if (!enabled("checks.movement.speed.enabled")) return;
-        // Omitir Speed cuando el jugador está planeando con Elytras
+        // Skip Speed when the player is gliding with Elytra
         boolean isGliding = false;
         try {
             java.lang.reflect.Method m = player.getClass().getMethod("isGliding");
@@ -142,7 +142,7 @@ public class MovementCheck implements Listener {
         } catch (Exception ignored) {}
         if (isGliding) return;
 
-        // Eximir temporalmente Speed justo tras terminar de planear con Elytra
+        // Temporarily exempt Speed right after finishing Elytra gliding
         long now = System.currentTimeMillis();
         long lastGlide = lastGlideMs.getOrDefault(player.getUniqueId(), 0L);
         long postGlideExemptMs = plugin.getConfig().getLong("checks.movement.elytra_post_landing_jump_exempt_ms", 1000L);
@@ -247,7 +247,7 @@ public class MovementCheck implements Listener {
                     ph.put("vl", String.valueOf(vl));
                     player.sendMessage(ms.format("player.fly", ph));
                 }
-                // Bloquear vuelo ilegal con setback
+                // Block illegal flight with setback
                 event.setTo(event.getFrom());
             }
         } else {
@@ -268,10 +268,10 @@ public class MovementCheck implements Listener {
         boolean slippery = ignoreSurfaces.contains(below);
         UUID id = player.getUniqueId();
         double absDy = Math.abs(dy);
-        boolean isActualGround = solidBelow && absDy < 0.031; // en suelo si casi no hay movimiento vertical
+        boolean isActualGround = solidBelow && absDy < 0.031; // on ground if minimal vertical movement
         boolean wasGround = wasOnGround.getOrDefault(id, true);
         long now = System.currentTimeMillis();
-        // Exención post-planeo con Elytra para evitar falsos positivos de Speed/BHop al aterrizar y saltar
+        // Post-glide Elytra exemption to avoid Speed/BHop false positives on landing and jumping
         long lastGlide = lastGlideMs.getOrDefault(id, 0L);
         long jumpExemptMs = plugin.getConfig().getLong("checks.movement.elytra_post_landing_jump_exempt_ms", 800L);
         if (lastGlide != 0L && now - lastGlide <= jumpExemptMs) {
@@ -279,7 +279,7 @@ public class MovementCheck implements Listener {
             bhopTicks.put(id, 0);
             return;
         }
-        // marcar aterrizaje para dar tolerancia a OnGroundSpeed justo tras caer
+        // Mark landing to allow brief OnGroundSpeed tolerance right after falling
         if (isActualGround && !wasGround) {
             lastGroundedMs.put(id, now);
         }
@@ -298,14 +298,14 @@ public class MovementCheck implements Listener {
                 }
             }
             allowed += speedLevel * perSpeedBonus;
-            // tolerancia breve tras aterrizar
+            // Brief tolerance after landing
             long lastLand = lastGroundedMs.getOrDefault(id, 0L);
             if (lastLand != 0L && now - lastLand <= 250) {
                 wasOnGround.put(id, isActualGround);
                 bhopTicks.put(id, 0);
-                return; // saltar chequeo justo al aterrizar
+                return; // skip check right after landing
             }
-            if (horizontal > allowed * 1.22) { // margen mayor para variaciones
+            if (horizontal > allowed * 1.22) { // larger margin for variation
                 int vl = plugin.getViolationManager().addViolation(player.getUniqueId(), "OnGroundSpeed", 1);
                 event.setTo(event.getFrom());
                 if (vl % 2 == 1) {
@@ -319,7 +319,7 @@ public class MovementCheck implements Listener {
             }
         }
 
-        // BHop: contar saltos reales (suelo->aire) con velocidad horizontal alta
+        // BHop: count real jumps (ground->air) with high horizontal speed
         int resetMs = plugin.getConfig().getInt("checks.movement.bhop.reset_ms", 2500);
         long lastJump = lastBhopJumpMs.getOrDefault(id, 0L);
         if (lastJump != 0L && now - lastJump > resetMs) {
@@ -327,7 +327,7 @@ public class MovementCheck implements Listener {
         }
 
         if (allowBhop && !isActualGround && wasGround && dy > 0.39 && !slippery && !player.isInsideVehicle()) {
-            // calcular velocidad permitida dinámica (considerando Speed)
+            // Calculate allowed speed dynamically (considering Speed)
             double baseWalk = plugin.getConfig().getDouble("checks.movement.speed.max_base_walk", 0.25);
             double baseSprint = plugin.getConfig().getDouble("checks.movement.speed.max_base_sprint", 0.35);
             double perSpeedBonus = plugin.getConfig().getDouble("checks.movement.speed.per_speed_level_bonus", 0.10);
@@ -370,12 +370,12 @@ public class MovementCheck implements Listener {
 
     private void checkStep(Player player, PlayerMoveEvent event) {
         if (!enabled("checks.movement.step.enabled")) return;
-        // Eximir cuando el jugador está planeando con elytra para evitar falsos positivos
+        // Exempt when the player is gliding with Elytra to avoid false positives
         if (isGliding(player)) return;
         double dy = event.getTo().getY() - event.getFrom().getY();
         if (dy <= 0) return;
 
-        // Ignorar escaleras y slabs
+        // Ignore stairs and slabs
         Material feet = player.getLocation().getBlock().getType();
         Material under = player.getLocation().clone().add(0, -1, 0).getBlock().getType();
         if (BlockUtil.isStairsOrSlab(feet) || BlockUtil.isStairsOrSlab(under)) return;
@@ -423,7 +423,7 @@ public class MovementCheck implements Listener {
             int t = jesusTicks.getOrDefault(player.getUniqueId(), 0) + 1;
             jesusTicks.put(player.getUniqueId(), t);
             double maxHz = plugin.getConfig().getDouble("checks.movement.jesus.max_horizontal_per_tick", 0.35);
-            if (horizontal > maxHz && t > 3) { // tolerancia por bordes
+            if (horizontal > maxHz && t > 3) { // edge tolerance
                 int vl = plugin.getViolationManager().addViolation(player.getUniqueId(), "WaterWalk", 1);
                 event.setTo(event.getFrom());
                 if (vl % 2 == 1) {
@@ -473,14 +473,14 @@ public class MovementCheck implements Listener {
         if (inLiquid) return;
         boolean onGround = player.getLocation().getBlock().getRelative(0, -1, 0).getType().isSolid();
 
-        // Detectar bloques sólidos adyacentes (paredes)
+        // Detect adjacent solid blocks (walls)
         Location loc = player.getLocation();
         boolean nearWall = loc.clone().add(1, 0, 0).getBlock().getType().isSolid()
                 || loc.clone().add(-1, 0, 0).getBlock().getType().isSolid()
                 || loc.clone().add(0, 0, 1).getBlock().getType().isSolid()
                 || loc.clone().add(0, 0, -1).getBlock().getType().isSolid();
 
-        // Ignorar escaleras y slabs (tolerancia extra en bordes)
+        // Ignore stairs and slabs (extra edge tolerance)
         Material feet = player.getLocation().getBlock().getType();
         Material under = player.getLocation().clone().add(0, -1, 0).getBlock().getType();
         if (BlockUtil.isStairsOrSlab(feet) || BlockUtil.isStairsOrSlab(under)) return;
@@ -534,7 +534,7 @@ public class MovementCheck implements Listener {
         double dist = event.getTo().distance(last);
         long dt = Math.max(1, now - lastTime);
         double maxBlinkDist = plugin.getConfig().getDouble("checks.movement.blink.max_distance", 6.0);
-        if (dist > maxBlinkDist && dt < 300) { // salto grande en poco tiempo
+        if (dist > maxBlinkDist && dt < 300) { // large jump in a short time
             int vl = plugin.getViolationManager().addViolation(player.getUniqueId(), "Blink", 1);
             event.setTo(event.getFrom());
             if (vl % 2 == 1) {
@@ -550,7 +550,7 @@ public class MovementCheck implements Listener {
 
     private void trackNoFallHeuristic(Player player, PlayerMoveEvent event) {
         if (!enabled("checks.movement.nofall.enabled")) return;
-        // Acumular distancia de caída cuando desciende; si aterriza tras > umbral y no hay líquido, marcar
+        // Accumulate fall distance when descending; if landing after > threshold and not in liquid, mark
         double dy = event.getTo().getY() - event.getFrom().getY();
         UUID id = player.getUniqueId();
         double acc = fallDistanceAcc.getOrDefault(id, 0.0);
@@ -558,7 +558,7 @@ public class MovementCheck implements Listener {
 
         boolean inLiquid = BlockUtil.isInLiquid(event.getTo());
         if (inLiquid) {
-            // Al entrar en líquido, limpiar acumulado para evitar marcar NoFall al salir del agua
+            // Upon entering liquid, clear accumulation to avoid marking NoFall upon exiting water
             lastLiquidMs.put(id, now);
             fallDistanceAcc.put(id, 0.0);
             noFallDeferUntilMs.remove(id);
@@ -575,14 +575,14 @@ public class MovementCheck implements Listener {
             lastGlideMs.put(id, now);
         }
         if (dy < 0 && !inLiquid) {
-            // No acumular caída mientras se planea con elytra
+            // Do not accumulate fall while gliding with elytra
             if (!isGliding) {
                 acc += -dy;
             }
             fallDistanceAcc.put(id, acc);
         }
         if (onGround) {
-            // Eximir aterrizaje reciente desde agua
+            // Exempt recent landing from water
             long lastLiq = lastLiquidMs.getOrDefault(id, 0L);
             long waterExemptMs = plugin.getConfig().getLong("checks.movement.nofall.water_landing_exempt_ms", 1500L);
             if (lastLiq != 0L && (now - lastLiq) <= waterExemptMs) {
@@ -591,7 +591,7 @@ public class MovementCheck implements Listener {
                 noFallDeferStartMs.remove(id);
                 return;
             }
-            // Eximir aterrizaje reciente tras planeo con elytra
+            // Exempt recent landing after elytra gliding
             long lastGlide = lastGlideMs.getOrDefault(id, 0L);
             long elytraExemptMs = plugin.getConfig().getLong("checks.movement.nofall.elytra_landing_exempt_ms", 1200L);
             if (lastGlide != 0L && (now - lastGlide) <= elytraExemptMs) {
@@ -632,25 +632,25 @@ public class MovementCheck implements Listener {
             boolean damageAfterDefer = (deferStart != null && lastFallMs != null && lastFallMs >= deferStart);
             if (acc > minFall) {
                 if (skipByAbsorption || recentFallDamage || damageAfterDefer) {
-                    // Exento por absorción o daño de caída reciente: limpiar acumulado y deferral
-                    fallDistanceAcc.put(id, 0.0);
-                    noFallDeferUntilMs.remove(id);
-                    noFallDeferStartMs.remove(id);
+                // Exempt due to absorption or recent fall damage: clear accumulation and deferral
+                fallDistanceAcc.put(id, 0.0);
+                noFallDeferUntilMs.remove(id);
+                noFallDeferStartMs.remove(id);
                 } else {
                     long graceMs = plugin.getConfig().getLong("checks.movement.nofall.landing_grace_ms", 500L);
                     Long deferUntil = noFallDeferUntilMs.get(id);
                     long until = (deferUntil == null) ? 0L : deferUntil.longValue();
                     if (until == 0L) {
-                        // Iniciar ventana de gracia para esperar el evento de daño
+                        // Start a grace window to wait for the damage event
                         noFallDeferStartMs.put(id, now);
                         noFallDeferUntilMs.put(id, now + graceMs);
                         return;
                     }
                     if (now < until) {
-                        // Aún dentro de la ventana: no marcamos ni limpiamos
+                        // Still within the window: do not mark or clear
                         return;
                     }
-                    // Ventana agotada y no hubo daño: marcar NoFall
+                    // Window expired and no damage occurred: mark NoFall
                     int vl = plugin.getViolationManager().addViolation(id, "NoFall", 1);
                     event.setTo(event.getFrom());
                     MessageService ms = plugin.getMessages();

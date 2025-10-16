@@ -65,7 +65,7 @@ public class VehicleCheck implements Listener {
         boolean speedEnabled = plugin.getConfig().getBoolean("checks.vehicle.boat.speed.enabled", true);
         boolean flyEnabled = plugin.getConfig().getBoolean("checks.vehicle.boat.fly.enabled", true);
 
-        // Acumular ticks en el aire (fuera de líquido y sin bloque bajo)
+        // Accumulate air ticks (outside liquid and without block below)
         if (flyEnabled) {
             UUID id = rider.getUniqueId();
             if (!inLiquid && !hasSolidBelow) {

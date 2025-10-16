@@ -20,7 +20,7 @@ public class MessageService {
     public void load() {
         this.language = plugin.getConfig().getString("language", "en");
         String fileName = "lang/messages_" + language + ".yml";
-        // Asegurar que el archivo exista en la carpeta de datos
+        // Ensure the file exists in the data folder
         File dataFile = new File(plugin.getDataFolder(), fileName);
         if (!dataFile.exists()) {
             plugin.saveResource(fileName, false);

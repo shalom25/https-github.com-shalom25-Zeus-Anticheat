@@ -35,7 +35,7 @@ public class ElytraCheck implements Listener {
         long until = boostUntilMs.getOrDefault(player.getUniqueId(), 0L);
         boolean inBoost = now < until;
         if (inBoost) {
-            // No sancionar durante el boost de cohete para evitar falsos positivos
+            // Do not flag during rocket boost to avoid false positives
             return;
         }
 
@@ -118,7 +118,7 @@ public class ElytraCheck implements Listener {
         int window = plugin.getConfig().getInt("checks.elytra.boost_exempt_window_ms", 1200);
         double radius = plugin.getConfig().getDouble("checks.elytra.boost_detect_radius", 3.5);
         double radiusSq = radius * radius;
-        // Conceder exención a jugadores planeando cerca del spawn del cohete
+        // Grant exemption to players gliding near the rocket spawn
         for (Player p : Bukkit.getOnlinePlayers()) {
             try {
                 if (!isGliding(p)) continue;

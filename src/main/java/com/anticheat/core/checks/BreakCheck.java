@@ -37,7 +37,7 @@ public class BreakCheck implements Listener {
         // Bypass: OPs o permisos configurados
         if (plugin.isExempt(player)) return;
 
-        // Ignorar bloques blandos (plantas, hojas, nieve, etc.) configurables para reducir falsos positivos
+        // Ignore soft blocks (plants, leaves, snow, etc.) configurable to reduce false positives
         java.util.List<String> softBlocks = plugin.getConfig().getStringList("checks.break.fastbreak.soft_blocks_ignore");
         if (softBlocks != null && !softBlocks.isEmpty()) {
             Material m = event.getBlock().getType();

@@ -61,7 +61,7 @@ public class CombatCheck implements Listener {
         UUID id = attacker.getUniqueId();
         Deque<Long> deque = hitTimes.computeIfAbsent(id, k -> new ArrayDeque<>());
         deque.addLast(now);
-        // mantener ventana de ~1.5s
+        // Maintain ~1.5s window
         while (!deque.isEmpty() && now - deque.peekFirst() > 1500) {
             deque.pollFirst();
         }

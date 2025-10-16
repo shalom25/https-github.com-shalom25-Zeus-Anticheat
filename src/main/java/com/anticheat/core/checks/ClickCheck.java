@@ -40,14 +40,14 @@ public class ClickCheck implements Listener {
         if (plugin.isExempt(player)) return;
         Action a = event.getAction();
         if (a == Action.PHYSICAL) return;
-        // Solo considerar clic izquierdo (LMB); ignorar clic derecho para evitar falsos positivos
+        // Consider only left-click (LMB); ignore right-click to reduce false positives
         if (a != Action.LEFT_CLICK_AIR && a != Action.LEFT_CLICK_BLOCK) return;
 
-        // Ignorar clics sobre bloques (romper/minar) para reducir falsos positivos al picar pasto
+        // Ignore clicks on blocks (breaking/mining) to reduce false positives when breaking grass
         boolean ignoreBlockClicks = plugin.getConfig().getBoolean("checks.click.autoclicker.ignore_block_clicks", true);
         if (ignoreBlockClicks && a == Action.LEFT_CLICK_BLOCK) return;
 
-        // Ignorar clics muy cercanos a una rotura de bloque (cuando el jugador está minando continuamente)
+        // Ignore clicks very close to a block break (when continuously mining)
         ItemStack hand = player.getItemInHand();
         int effLevel = hand != null ? hand.getEnchantmentLevel(Enchantment.DIG_SPEED) : 0;
         int hasteLevel = 0;

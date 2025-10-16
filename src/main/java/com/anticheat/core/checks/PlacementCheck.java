@@ -71,7 +71,7 @@ public class PlacementCheck implements Listener {
         boolean sneakingExempt = plugin.getConfig().getBoolean("checks.place.scaffold.sneaking_exempt", true);
         boolean toweringExempt = plugin.getConfig().getBoolean("checks.place.scaffold.towering_exempt", true);
         double towerHzEps = plugin.getConfig().getDouble("checks.place.scaffold.towering_horizontal_epsilon", 0.22);
-        // Exención adicional: colocar al saltar mientras se torre (subida vertical legítima)
+        // Additional exemption: placing while jumping during towering (legitimate vertical ascent)
         boolean jumpingExemptEnabled = plugin.getConfig().getBoolean("checks.place.scaffold.jumping_exempt", true);
         double jumpVertMin = plugin.getConfig().getDouble("checks.place.scaffold.jump_vertical_min", 0.23);
         double jumpHzEps = plugin.getConfig().getDouble("checks.place.scaffold.jump_horizontal_epsilon", 0.38);

@@ -103,7 +103,7 @@ public class BaritoneCheck implements Listener {
             return;
         }
 
-        // Exención: construcción vertical (towering) con colocación reciente
+        // Exemption: vertical building (towering) with recent placement
         long now = System.currentTimeMillis();
         Long lastPlace = lastPlaceMs.get(player.getUniqueId());
         int placeExemptMs = plugin.getConfig().getInt("checks.movement.baritone.place_exempt_ms", 800);
