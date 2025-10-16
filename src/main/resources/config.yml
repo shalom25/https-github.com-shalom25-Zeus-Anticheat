@@ -1,13 +1,13 @@
-# Configuración por defecto para Zeus Anti-Cheat
+# Default configuration for Zeus Anti-Cheat
 
 messages:
   prefix: "&b[Zeus]&7 "
   notify_ops_on_detect: true
-  # Broadcast público cuando se sancione a un jugador
+  # Public broadcast when a player is sanctioned
   broadcast_on_kick: true
   broadcast_on_ban: true
   broadcast_on_mute: true
-  # Incluir VL en los anuncios públicos del anti-cheat
+  # Include VL in public anti-cheat broadcasts
   include_vl_in_broadcasts: false
 
 hooks:
@@ -15,7 +15,7 @@ hooks:
     enabled: true
     broadcast: true
 
-# Idioma de los mensajes ("es" o "en")
+# Message language ("es" or "en")
 language: en
 
 logs:
@@ -23,17 +23,17 @@ logs:
   file_name: "logs.txt"
   max_in_memory: 500
 
-# Exenciones: jugadores que el anti‑cheat no debe afectar
+# Exemptions: players the anti-cheat should not affect
 exempt:
-  # Eximir a operadores (OP) de todos los checks
+  # Exempt operators (OP) from all checks
   ops: true
-  # Lista de permisos que otorgan bypass total
+  # Permissions that grant full bypass
   permissions:
     - "anticheat.bypass"
     - "zeus.bypass"
-  # Ignorar completamente jugadores Bedrock (Floodgate)
+  # Completely ignore Bedrock players (Floodgate)
   bedrock: true
-  # Bypass granular por check (true permite bypass; false lo desactiva)
+  # Granular bypass per check (true allows bypass; false disables)
   checks:
     crash: false
 
@@ -44,7 +44,7 @@ checks:
       max_base_walk: 0.25
       max_base_sprint: 0.35
       per_speed_level_bonus: 0.10
-      # Tolerancias adicionales para reducir falsos positivos en Speed
+      # Additional tolerances to reduce Speed false positives
       margin_multiplier: 1.25
       jitter_buffer: 0.04
       ignore_surfaces:
@@ -82,7 +82,7 @@ checks:
       damage_exempt_window_ms: 1500
       landing_grace_ms: 500
       elytra_landing_exempt_ms: 1200
-      # Exención al salir del agua: no marcar NoFall si tocó líquido recientemente
+      # Exemption when leaving water: do not mark NoFall if recently in liquid
       water_landing_exempt_ms: 1500
     timer:
       enabled: true
@@ -108,7 +108,7 @@ checks:
       stable_ticks_threshold: 35
       cancel_on_detect: true
       gliding_exempt: true
-      # Exención de construcción vertical (pillar) cuando se ha colocado bloque recientemente
+# Exemption for vertical building (pillar) when a block was placed recently
       place_exempt_ms: 800
       place_vertical_min: 0.12
       place_horizontal_epsilon: 0.35
@@ -126,7 +126,7 @@ checks:
       fly:
         enabled: true
         max_vertical_per_tick: 0.4
-        # Ticks consecutivos fuera de líquido y sin bloque bajo para alertar BoatFly
+        # Consecutive ticks outside liquid and without block below to alert BoatFly
         air_ticks_threshold: 5
   combat:
     reach:
@@ -171,17 +171,17 @@ checks:
   break:
     fastbreak:
       enabled: true
-      # Máximo de bloques por segundo antes de alertar FastBreak (base)
+      # Maximum blocks per second before alerting FastBreak (base)
       max_per_sec: 12
-      # Considera Eficiencia en herramienta y Haste para elevar el umbral
+      # Consider Efficiency on tool and Haste to raise the threshold
       consider_efficiency: true
-      # Bonificación al umbral por cada nivel de Eficiencia
+      # Threshold bonus per Efficiency level
       efficiency_bonus_per_level: 1
-      # Bonificación al umbral por cada nivel de Haste
+      # Threshold bonus per Haste level
       haste_bonus_per_level: 2
-      # Multiplicador extra para palas con Eficiencia (instamine en tierra/arena/grava)
+      # Extra multiplier for shovels with Efficiency (instamine on dirt/sand/gravel)
       shovel_efficiency_multiplier: 2.0
-      # Bloques blandos que se ignoran en FastBreak para evitar falsos positivos
+      # Soft blocks ignored in FastBreak to reduce false positives
       soft_blocks_ignore:
         - LONG_GRASS
         - LEAVES
@@ -200,7 +200,7 @@ checks:
         - SAND
         - GRAVEL
 
-      # Lista de bloques blandos donde permitimos intervalos aún más bajos
+      # List of soft blocks where even lower intervals are allowed
       soft_blocks_allow:
         - DIRT
         - GRASS
@@ -210,22 +210,22 @@ checks:
         - SNOW_BLOCK
         - SOUL_SAND
         - FARMLAND
-      # Bonificación de tolerancia (bloques/seg) para bloques blandos permitidos
+      # Tolerance bonus (blocks/sec) for allowed soft blocks
       soft_blocks_allow_bonus_per_sec: 6
-      # Reducción adicional del intervalo mínimo para bloques blandos
+      # Additional reduction of minimum interval for soft blocks
       soft_blocks_bonus_reduction_ms: 20
   click:
     autoclicker:
       enabled: true
-      # Ignora los clics izquierdos sobre bloques (romper/minar) para reducir falsos positivos
+      # Ignore left clicks on blocks (break/mine) to reduce false positives
       ignore_block_clicks: true
-      # Ignora clics muy cercanos a una rotura de bloque (cuando estás minando)
+      # Ignore clicks very close to a block break (when mining)
       ignore_recent_block_break_ms: 220
-      # Considera Eficiencia y Haste al ampliar la ventana de ignorar clics tras rotura
+      # Consider Efficiency and Haste when expanding the ignore window after break
       consider_efficiency: true
       ignore_recent_bonus_eff_ms: 30
       ignore_recent_bonus_haste_ms: 40
-      # Bonificación por usar herramienta de minería (pico, pala, hacha)
+      # Bonus for using mining tool (pickaxe, shovel, axe)
       ignore_recent_tool_bonus_ms: 50
   inventory:
     autototem:
